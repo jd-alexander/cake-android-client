@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">AndroidTest</string>
+    <string name="app_name">Cake</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_refresh">Refresh</string>
+    <string name="error_title_sorry">Sorry</string>
+    <string name="button_retry">Retry</string>
 </resources>

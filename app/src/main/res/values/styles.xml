@@ -2,7 +2,40 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+
+        <item name="actionBarStyle">@style/Widget.AppTheme.ActionBar</item>
+
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:textColorPrimary">@color/primary_text</item>
+        <item name="android:actionMenuTextColor">@android:color/black</item>    </style>
+
+    <style name="Cake.TextAppearance.Header" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_header_24</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Cake.TextAppearance.Title" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_title_20</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <style name="Cake.TextAppearance.Body" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_header_16</item>
+    </style>
+
+    <style name="Widget.AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar.Solid">
+        <!-- action bar background - without android prefix -->
+        <item name="background">@color/primary</item>
+        <!-- action bar elevation - without android prefix -->
+        <item name="elevation">4dp</item>
+        <!-- title text color -->
+        <item name="titleTextColor">@android:color/white</item>
+        <!-- subtitle text color -->
+        <item name="subtitleTextColor">?android:textColorSecondary</item>
     </style>
 
 </resources>

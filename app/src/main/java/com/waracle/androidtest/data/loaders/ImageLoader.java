@@ -1,10 +1,14 @@
-package com.waracle.androidtest;
+package com.waracle.androidtest.data.loaders;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.text.TextUtils;
-import android.util.Log;
+import android.util.LruCache;
 import android.widget.ImageView;
+
+import com.waracle.androidtest.utils.BitmapCache;
+import com.waracle.androidtest.utils.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,9 +21,11 @@ import java.security.InvalidParameterException;
  */
 public class ImageLoader {
 
-    private static final String TAG = ImageLoader.class.getSimpleName();
+    private LruCache<String, Bitmap> mCache;
 
-    public ImageLoader() { /**/ }
+    public ImageLoader() {
+        mCache = BitmapCache.getInstance().getLruCache();
+    }
 
     /**
      * Simple function for loading a bitmap image from the web
@@ -27,19 +33,31 @@ public class ImageLoader {
      * @param url       image url
      * @param imageView view to set image too.
      */
-    public void load(String url, ImageView imageView) {
+    public void load(String url, final ImageView imageView) {
+
         if (TextUtils.isEmpty(url)) {
             throw new InvalidParameterException("URL is empty!");
         }
 
+        final Bitmap targetBitmap = getBitmapFromCache(url);
+
+        if (targetBitmap != null) {
+            setImageView(imageView, targetBitmap);
+        } else {
+            LoadImageTask task = new LoadImageTask() {
+                @Override
+                protected void onPostExecute(Bitmap bitmap) {
+                    setImageView(imageView, bitmap);
+                }
+            };
+
+            task.execute(url);
+        }
         // Can you think of a way to improve loading of bitmaps
         // that have already been loaded previously??
 
-        try {
-            setImageView(imageView, convertToBitmap(loadImageData(url)));
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        }
+        // a memory cache to store bitmaps so that they're not fetched
+        // multiple times
     }
 
     private static byte[] loadImageData(String url) throws IOException {
@@ -73,5 +91,37 @@ public class ImageLoader {
 
     private static void setImageView(ImageView imageView, Bitmap bitmap) {
         imageView.setImageBitmap(bitmap);
+    }
+
+    private void addBitmapToCache(String key, Bitmap bitmap) {
+        if (getBitmapFromCache(key) == null) {
+            mCache.put(key, bitmap);
+        }
+    }
+
+    private Bitmap getBitmapFromCache(String key) {
+        return mCache.get(key);
+    }
+
+    public class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+
+            byte[] data = null;
+
+            try {
+                data = loadImageData(strings[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Bitmap output = convertToBitmap(data);
+
+            if (output != null) {
+                addBitmapToCache(strings[0], output);
+            }
+            return convertToBitmap(data);
+        }
     }
 }
