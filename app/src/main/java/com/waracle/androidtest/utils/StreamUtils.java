@@ -6,18 +6,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-
-/**
- * Created by Riad on 20/05/2015.
- */
 public class StreamUtils {
     private static final String TAG = StreamUtils.class.getSimpleName();
 
-    // Can you see what's wrong with this???
-    // Extremely inefficient - reads one byte at a time
     public static byte[] readUnknownFully(InputStream stream) throws IOException {
 
-        //Better approach: use output stream with a buffer of predetermined size
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         byte[] buffer = new byte[8192];

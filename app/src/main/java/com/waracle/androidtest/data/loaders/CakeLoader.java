@@ -20,6 +20,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waracle.androidtest.utils.GeneralUtils.isOnline;
+
 public class CakeLoader extends AsyncTaskLoader<Result<List<Cake>>> {
 
     private static final String JSON_URL = "https://gist.githubusercontent.com/hart88/198f29ec5114a3ec3460/" +
@@ -39,14 +41,20 @@ public class CakeLoader extends AsyncTaskLoader<Result<List<Cake>>> {
     @Override
     public Result<List<Cake>> loadInBackground() {
 
+        if(!isOnline(getContext()))
+        {
+            return new Result<>("No internet access");
+        }
+
         JSONArray dataAsJson;
 
         try {
             URL url = new URL(JSON_URL);
             dataAsJson = loadData(url);
         } catch (IOException | JSONException e) {
-            Log.e(TAG, "HTTP error");
-            return null;
+
+            Log.e(TAG,e.getMessage());
+            return new Result<>("Something went wrong with the server. Try again.");
         }
 
         return new Result<>(parseJson(dataAsJson));
@@ -106,7 +114,7 @@ public class CakeLoader extends AsyncTaskLoader<Result<List<Cake>>> {
                 outputList.add(cake);
             }
         } catch (JSONException e) {
-            Log.e(TAG, "Error parsing JSON");
+            Log.e(TAG,e.getMessage());
         }
 
         return outputList;

@@ -16,9 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.InvalidParameterException;
 
-/**
- * Created by Riad on 20/05/2015.
- */
+
 public class ImageLoader {
 
     private LruCache<String, Bitmap> mCache;
@@ -27,12 +25,7 @@ public class ImageLoader {
         mCache = BitmapCache.getInstance().getLruCache();
     }
 
-    /**
-     * Simple function for loading a bitmap image from the web
-     *
-     * @param url       image url
-     * @param imageView view to set image too.
-     */
+
     public void load(String url, final ImageView imageView) {
 
         if (TextUtils.isEmpty(url)) {

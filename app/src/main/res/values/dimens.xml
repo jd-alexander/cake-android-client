@@ -12,5 +12,8 @@
     <dimen name="text_header_16">16sp</dimen>
 
     <dimen name="list_item_image_size">64dp</dimen>
+    <dimen name="app_elevation">8dp</dimen>
+    <dimen name="app_button_height">30dp</dimen>
+    <dimen name="app_button_width">100dp</dimen>
 
 </resources>

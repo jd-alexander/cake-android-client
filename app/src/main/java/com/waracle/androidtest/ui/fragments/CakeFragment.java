@@ -101,6 +101,10 @@ public class CakeFragment extends Fragment
         errorRetryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideError();
+
+                showProgress();
+                getLoaderManager().restartLoader(LOADER_ID, null, CakeFragment.this);
 
             }
         });
@@ -110,6 +114,8 @@ public class CakeFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        showProgress();
+
         // Create and set the list adapter.
         mAdapter = new CakeListAdapter(getActivity());
         mAdapter.setHasStableIds(true);
@@ -117,6 +123,7 @@ public class CakeFragment extends Fragment
         mRecyclerView.setAdapter(mAdapter);
 
         // Load data from net. Use AsyncTaskLoader to preserve data on orientation change
+
         getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
@@ -136,6 +143,7 @@ public class CakeFragment extends Fragment
 
         // we're making the menu button do what it advertises
         if (id == R.id.action_refresh) {
+            showProgress();
             getLoaderManager().restartLoader(LOADER_ID, null, this);
         }
 
@@ -149,6 +157,9 @@ public class CakeFragment extends Fragment
 
     @Override
     public void onLoadFinished(Loader<Result<List<Cake>>> loader, Result<List<Cake>> result) {
+
+        hideProgress();
+
         if (!TextUtils.isEmpty(result.getError())) {
 
             showError(result.getError());
@@ -156,12 +167,29 @@ public class CakeFragment extends Fragment
         }
         mAdapter.setItems(result.getData());
 
+
     }
 
-    public void showError(String body) {
+    private void showError(String body) {
         errorContainer.setVisibility(View.VISIBLE);
         errorBodyView.setText(body);
     }
+
+    private void hideError()
+    {
+        errorContainer.setVisibility(View.GONE);
+    }
+
+    private void showProgress()
+    {
+       progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgress()
+    {
+       progressBar.setVisibility(View.GONE);
+    }
+
 
     @Override
     public void onLoaderReset(Loader<Result<List<Cake>>> loader) {
